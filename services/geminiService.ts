@@ -108,17 +108,31 @@ export const buildUserPrompt = (info: LessonInfo, options: ProcessingOptions): s
     }
   }
 
-  const isEnglishSubject = info.subject === Subject.ANH || info.subject === Subject.NGOAI_NGU_1 || /anh|english/i.test(String(info.subject));
+  const isEnglishSubject = info.subject === Subject.ANH || info.subject === Subject.NGOAI_NGU_1 || /anh|tiếng anh|ngoại ngữ|english/i.test(String(info.subject));
 
   const englishRule = isEnglishSubject ? `
   ========================================================================================
   🇬🇧 QUY TẮC ĐẶC BIỆT DÀNH RIÊNG CHO MÔN TIẾNG ANH (ENGLISH LESSON PLAN INTEGRATION):
   - Môn học được chọn là TIẾNG ANH (hoặc giáo án gốc viết bằng tiếng Anh).
-  - BẢO TOÀN CẤU TRÚC 100%: Giữ nguyên hoàn toàn hệ thống đề mục tiếng Anh gốc của giáo án (Ví dụ: I. OBJECTIVES: 1. Knowledge, 2. Competences/Competencies, 3. Qualities; II. TEACHING AIDS; III. PROCEDURE / TEACHING STEPS; Teacher's Activities, Students' Activities, v.v.).
-  - BẮT BUỘC TÍCH HỢP BẰNG TIẾNG ANH:
+  - BẢO TOÀN CẤU TRÚC 100%: Giữ nguyên hoàn toàn hệ thống đề mục tiếng Anh gốc của giáo án (Ví dụ: I. OBJECTIVES: 1. Knowledge, 2. Competences/Competencies, 3. Qualities; II. TEACHING AIDS / MATERIALS; III. PROCEDURE / TEACHING STEPS; Teacher's Activities, Students' Activities, v.v.).
+  - BẮT BUỘC TÍCH HỢP 100% BẰNG TIẾNG ANH:
     + Toàn bộ mục tiêu tích hợp Năng lực số (Digital Competence) và Năng lực AI (AI Competence) PHẢI ĐƯỢC VIẾT HOÀN TOÀN BẰNG TIẾNG ANH (Ví dụ: "2.3. Digital Competence: [1.1.CB1a] Students are able to search and retrieve online learning materials...", "2.4. AI Competence: [AI.1.6a] Students can formulate effective English prompts using AI chatbots...").
-    + Toàn bộ hoạt động dạy học tích hợp được bổ sung (bọc trong thẻ <nls>...</nls>) PHẢI ĐƯỢC VIẾT HOÀN TOÀN BẰNG TIẾNG ANH tự nhiên và phù hợp với thuật ngữ sư phạm tiếng Anh.
-    + ⛔ TUYỆT ĐỐI KHÔNG VIẾT BẰNG TIẾNG VIỆT TRONG GIÁO ÁN TIẾNG ANH.
+    + ⛔ TUYỆT ĐỐI KHÔNG VIẾT BẰNG TIẾNG VIỆT TRONG BẤT KỲ PHẦN NÀO CỦA GIÁO ÁN TIẾNG ANH.
+
+  🔥 QUY CÁCH CHÈN NỘI DUNG TÍCH HỢP VÀO 4 BƯỚC THỰC HIỆN NHIỆM VỤ CỦA MÔN TIẾNG ANH (BẮT BUỘC CHI TIẾT - KHÔNG ĐƯỢC SƠ SÀI):
+  Trong các hoạt động dạy học được chọn để tích hợp, nội dung tích hợp (bọc trong thẻ <nls>...</nls>) PHẢI ĐƯỢC CHÈN CHI TIẾT VÀO ĐẦY ĐỦ 4 BƯỚC THEO ĐÚNG THUẬT NGỮ SƯ PHẠM TIẾNG ANH CHUYÊN NGÀNH:
+    * Bước 1: Giáo viên giao nhiệm vụ (Step 1: Delivering the task / Giving instructions):
+      - Nêu rõ giáo viên giao nhiệm vụ số/AI thế nào (chỉ định công cụ số, ứng dụng, QR code/link tới Quizlet, Kahoot, Padlet, Google Docs, hoặc chatbot AI như ChatGPT/Copilot/Gemini; cung cấp từ khóa tra cứu hoặc câu lệnh Prompt tiếng Anh mẫu, giới hạn thời gian, định dạng sản phẩm đầu ra).
+      - Ví dụ mẫu chèn trong <nls>: "Teacher delivers the digital/AI task: T instructs students to open [Platform/App] via [Link/QR code], explains the search keywords / AI prompt '[Specific prompt/keywords in English]', and sets a [X]-minute time limit to complete the vocabulary/reading/speaking task."
+    * Bước 2: Học sinh thực hiện nhiệm vụ (Step 2: Performing the task):
+      - Nêu rõ học sinh thao tác trên thiết bị số/ứng dụng số ra sao (cá nhân hoặc theo cặp/nhóm; truy cập nền tảng, nhập từ khóa tìm kiếm, tương tác với AI chatbot để luyện tập phát âm/hội thoại/từ vựng, thảo luận nhóm, so sánh thông tin, ghi chú dữ liệu số). Giáo viên quan sát, bao quát và hỗ trợ học sinh gặp khó khăn kỹ thuật hoặc ngôn ngữ.
+      - Ví dụ mẫu chèn trong <nls>: "Students perform the task: Ss work in pairs/groups using digital devices to access [Platform/App], type target keywords / AI prompts, collaborate to find information, practice dialogue/pronunciation with AI, and record their findings while Teacher monitors and provides language and technical support."
+    * Bước 3: Học sinh báo cáo kết quả (Step 3: Reporting and Discussion):
+      - Nêu rõ học sinh báo cáo sản phẩm số thế nào (đại diện nhóm trình chiếu màn hình, chia sẻ bảng Padlet, trình bày slide/mindmap số, chia sẻ kết quả tương tác với AI; các nhóm khác lắng nghe, nhận xét phản biện bằng tiếng Anh).
+      - Ví dụ mẫu chèn trong <nls>: "Students report & discuss: Representative students project their digital presentation / Padlet wall / AI conversation outcomes on screen, present their ideas in English; other groups actively listen, peer-assess, and ask questions in English."
+    * Bước 4: Giáo viên nhận xét, đánh giá (Step 4: Assessment and Conclusion):
+      - Nêu rõ giáo viên nhận xét, đánh giá thế nào về độ chính xác ngôn ngữ, tính lưu loát, đồng thời đánh giá kỹ năng số và năng lực sử dụng AI/đạo đức số/tư duy phản biện của học sinh; chốt lại kiến thức trọng tâm bài học.
+      - Ví dụ mẫu chèn trong <nls>: "Teacher assesses & concludes: T provides constructive feedback on students' English pronunciation, grammar accuracy, and evaluates their digital search skills / AI interaction ethics; T summarizes the key target language structures and confirms correct answers."
   ========================================================================================
   ` : "";
 
@@ -144,10 +158,12 @@ export const buildUserPrompt = (info: LessonInfo, options: ProcessingOptions): s
     YÊU CẦU VỀ ĐỊNH DẠNG VÀ TÍCH HỢP 4 BƯỚC (BẮT BUỘC):
     1. ĐỊNH DẠNG ĐẦU VÀO: Nội dung giáo án gốc bên dưới có thể là HTML (được chuyển từ DOCX). Các công thức toán học đã được thay thế bằng các mã giữ chỗ có dạng [MATH_ID_...].
     2. NHIỆM VỤ: Bạn phải chuyển đổi nội dung này sang MARKDOWN, đồng thời TÍCH HỢP nội dung theo đúng yêu cầu.
-    3. BẢO TOÀN CẤU TRÚC 100%: 
-       - Giữ nguyên tất cả các Bảng (Table) của giáo án gốc (chuyển sang Markdown Table). KHÔNG ĐƯỢC làm mất bảng hoặc biến bảng thành văn bản thường.
-       - Giữ nguyên các tiêu đề, danh sách, không tự ý tóm tắt nội dung bài dạy.
-       - Giữ nguyên các đoạn in đậm/nghiêng.
+    3. BẢO TOÀN 100% CẤU TRÚC VÀ DẠNG BIỂU CỘT CỦA GIÁO ÁN GỐC (BẮT BUỘC TUYỆT ĐỐI):
+       - Mỗi người dùng/nhà trường có một mẫu giáo án riêng (Công văn 5512, Công văn 2345, mẫu 2 cột, mẫu 3 cột, mẫu 4 cột, bảng tiến trình, hay văn bản dạng mục).
+       - TUYỆT ĐỐI BẢO TỒN NGUYÊN VẸN 100% mẫu cấu trúc giáo án mà người dùng đã đưa lên: giữ đúng toàn bộ tiêu đề, đề mục lớn nhỏ, nội dung chuyên môn, câu hỏi, bài tập gốc.
+       - BẢO TỒN NGUYÊN VẸN BẢNG BIỂU CỘT: Nếu giáo án gốc dùng bảng (2 cột: Hoạt động GV - Hoạt động HS, hoặc 4 cột: Mục tiêu - Nội dung - Sản phẩm - Tổ chức thực hiện, v.v.), ĐẦU RA BẮT BUỘC PHẢI GIỮ ĐÚNG BẢNG BIỂU ĐÓ dưới dạng Markdown Table. TUYỆT ĐỐI KHÔNG được phá vỡ bảng thành văn bản trơn hay thay đổi số cột/tiêu đề cột của người dùng.
+       - TRONG Ô BẢNG: Sử dụng thẻ <br> để ngắt dòng bên trong ô, không nhấn Enter xuống dòng tự do làm hỏng cấu trúc bảng.
+       - NGUYÊN TẮC TÍCH HỢP LÀ "CHÈN THÊM VÀO ĐÚNG VỊ TRÍ - KHÔNG VIẾT LẠI GIÁO ÁN": Chỉ bổ sung các nội dung tích hợp (Mục tiêu NLS/NLA và 4 bước thực hiện) vào đúng các vị trí phù hợp trong cấu trúc của người dùng, bọc trong thẻ <nls>...</nls>. Giữ nguyên 100% tất cả các phần còn lại.
     4. QUY CÁCH TÍCH HỢP NĂNG LỰC SỐ & AI VÀO TIẾN TRÌNH 4 BƯỚC CỦA HOẠT ĐỘNG DẠY HỌC:
        - TUYỆT ĐỐI KHÔNG VIẾT CHUNG CHUNG, SƠ SÀI.
        - Trong các hoạt động dạy học được chọn tích hợp, nội dung tích hợp (bọc trong thẻ <nls>...</nls>) PHẢI ĐƯỢC CHÈN CHI TIẾT VÀO ĐỦ 4 BƯỚC:
