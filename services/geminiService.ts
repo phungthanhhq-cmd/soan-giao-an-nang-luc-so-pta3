@@ -119,20 +119,15 @@ export const buildUserPrompt = (info: LessonInfo, options: ProcessingOptions): s
     + Toàn bộ mục tiêu tích hợp Năng lực số (Digital Competence) và Năng lực AI (AI Competence) PHẢI ĐƯỢC VIẾT HOÀN TOÀN BẰNG TIẾNG ANH (Ví dụ: "2.3. Digital Competence: [1.1.CB1a] Students are able to search and retrieve online learning materials...", "2.4. AI Competence: [AI.1.6a] Students can formulate effective English prompts using AI chatbots...").
     + ⛔ TUYỆT ĐỐI KHÔNG VIẾT BẰNG TIẾNG VIỆT TRONG BẤT KỲ PHẦN NÀO CỦA GIÁO ÁN TIẾNG ANH.
 
-  🔥 QUY CÁCH CHÈN NỘI DUNG TÍCH HỢP VÀO 4 BƯỚC THỰC HIỆN NHIỆM VỤ CỦA MÔN TIẾNG ANH (BẮT BUỘC CHI TIẾT - KHÔNG ĐƯỢC SƠ SÀI):
-  Trong các hoạt động dạy học được chọn để tích hợp, nội dung tích hợp (bọc trong thẻ <nls>...</nls>) PHẢI ĐƯỢC CHÈN CHI TIẾT VÀO ĐẦY ĐỦ 4 BƯỚC THEO ĐÚNG THUẬT NGỮ SƯ PHẠM TIẾNG ANH CHUYÊN NGÀNH:
-    * Bước 1: Giáo viên giao nhiệm vụ (Step 1: Delivering the task / Giving instructions):
-      - Nêu rõ giáo viên giao nhiệm vụ số/AI thế nào (chỉ định công cụ số, ứng dụng, QR code/link tới Quizlet, Kahoot, Padlet, Google Docs, hoặc chatbot AI như ChatGPT/Copilot/Gemini; cung cấp từ khóa tra cứu hoặc câu lệnh Prompt tiếng Anh mẫu, giới hạn thời gian, định dạng sản phẩm đầu ra).
-      - Ví dụ mẫu chèn trong <nls>: "Teacher delivers the digital/AI task: T instructs students to open [Platform/App] via [Link/QR code], explains the search keywords / AI prompt '[Specific prompt/keywords in English]', and sets a [X]-minute time limit to complete the vocabulary/reading/speaking task."
-    * Bước 2: Học sinh thực hiện nhiệm vụ (Step 2: Performing the task):
-      - Nêu rõ học sinh thao tác trên thiết bị số/ứng dụng số ra sao (cá nhân hoặc theo cặp/nhóm; truy cập nền tảng, nhập từ khóa tìm kiếm, tương tác với AI chatbot để luyện tập phát âm/hội thoại/từ vựng, thảo luận nhóm, so sánh thông tin, ghi chú dữ liệu số). Giáo viên quan sát, bao quát và hỗ trợ học sinh gặp khó khăn kỹ thuật hoặc ngôn ngữ.
-      - Ví dụ mẫu chèn trong <nls>: "Students perform the task: Ss work in pairs/groups using digital devices to access [Platform/App], type target keywords / AI prompts, collaborate to find information, practice dialogue/pronunciation with AI, and record their findings while Teacher monitors and provides language and technical support."
-    * Bước 3: Học sinh báo cáo kết quả (Step 3: Reporting and Discussion):
-      - Nêu rõ học sinh báo cáo sản phẩm số thế nào (đại diện nhóm trình chiếu màn hình, chia sẻ bảng Padlet, trình bày slide/mindmap số, chia sẻ kết quả tương tác với AI; các nhóm khác lắng nghe, nhận xét phản biện bằng tiếng Anh).
-      - Ví dụ mẫu chèn trong <nls>: "Students report & discuss: Representative students project their digital presentation / Padlet wall / AI conversation outcomes on screen, present their ideas in English; other groups actively listen, peer-assess, and ask questions in English."
-    * Bước 4: Giáo viên nhận xét, đánh giá (Step 4: Assessment and Conclusion):
-      - Nêu rõ giáo viên nhận xét, đánh giá thế nào về độ chính xác ngôn ngữ, tính lưu loát, đồng thời đánh giá kỹ năng số và năng lực sử dụng AI/đạo đức số/tư duy phản biện của học sinh; chốt lại kiến thức trọng tâm bài học.
-      - Ví dụ mẫu chèn trong <nls>: "Teacher assesses & concludes: T provides constructive feedback on students' English pronunciation, grammar accuracy, and evaluates their digital search skills / AI interaction ethics; T summarizes the key target language structures and confirms correct answers."
+  🔥 QUY CÁCH CHÈN NỘI DUNG TÍCH HỢP VÀO HOẠT ĐỘNG DẠY HỌC MÔN TIẾNG ANH (TỰ NHIÊN - KHÔNG SINH RA KÝ TỰ/TIÊU ĐỀ THỪA):
+  - TUYỆT ĐỐI KHÔNG tự ý chèn thêm các tiêu đề lạ như "Step 1:...", "Step 2:...", "Step 3:...", "Step 4:..." nếu trong giáo án gốc của giáo viên KHÔNG có các tiêu đề đó.
+  - BẢO TỒN NGUYÊN BẢN CẤU TRÚC GỐC: Nếu giáo án gốc chia 2 cột "Teacher's Activities" / "Students' Activities" hoặc các mục "Warm-up", "Presentation", "Practice", "Production", "Consolidation", hãy giữ nguyên 100% các đề mục đó.
+  - CHỈ CHÈN NỘI DUNG TÍCH HỢP (bọc trong thẻ <nls>...</nls>) một cách mượt mà, tự nhiên vào đúng các bước/vị trí tương ứng trong hoạt động của giáo viên và học sinh:
+    * Nhiệm vụ của GV (Giao nhiệm vụ): Chèn hành động GV hướng dẫn dùng công cụ số/nền tảng/chatbot AI, cung cấp từ khóa/prompt tiếng Anh mẫu (Ví dụ: "T asks students to use [App/Platform] with the prompt '...' to...").
+    * Hoạt động của HS (Thực hiện): Chèn hành động HS tương tác với thiết bị số/ứng dụng/AI theo nhóm hoặc cá nhân để luyện tập phát âm, tra cứu, làm bài tập số (Ví dụ: "Ss access [Platform], type the prompt, practice dialogue with AI, and record results while T monitors...").
+    * Báo cáo/Thảo luận: Chèn hành động HS trình chiếu/chia sẻ kết quả số (Padlet, slide, kết quả AI) bằng tiếng Anh; các bạn lắng nghe và nhận xét (Ví dụ: "Representative students present their digital output / Padlet screen in English; other groups peer-assess.").
+    * Đánh giá/Nhận xét: Chèn hành động GV nhận xét kỹ năng ngôn ngữ và kỹ năng số/sử dụng AI của học sinh, chốt kiến thức trọng tâm (Ví dụ: "T gives feedback on students' pronunciation, language accuracy, and digital interaction skills, then summarizes key structures.").
+  - NGHIÊM CẤM TỰ PHÁT SINH KÝ TỰ LẠ, LỜI DẪN THỪA, TIÊU ĐỀ THỪA NGOÀI GIÁO ÁN GỐC.
   ========================================================================================
   ` : "";
 
@@ -223,10 +218,11 @@ async function generateLessonPlanClientSide(
   const userPrompt = buildUserPrompt(info, options);
 
   const modelsToTry = [
-    "gemini-3.6-flash",
     "gemini-2.5-flash",
     "gemini-2.0-flash",
     "gemini-1.5-flash",
+    "gemini-2.5-pro",
+    "gemini-1.5-pro",
   ];
 
   const callModel = async (modelId: string) => {
@@ -311,10 +307,13 @@ export const generateNLSLessonPlan = async (
     }
 
     if (!response.ok) {
-      // If error is 401 (Invalid API Key) or 400 with invalid key, check if user supplied key and fall back to client side to give direct feedback
-      if (response.status === 401 || response.status === 403) {
-        if (userApiKey.trim()) {
+      // If error is 401, 403, 429, or 500 and user has client-side API Key, seamlessly fallback to client-side
+      if (userApiKey.trim()) {
+        try {
+          console.log("[GeminiService] Server returned error, falling back to client-side execution with saved API Key...");
           return await generateLessonPlanClientSide(info, options, userApiKey);
+        } catch (clientErr: any) {
+          throw clientErr;
         }
       }
       throw new Error(data.error || `Lỗi từ Server AI (${response.status})`);

@@ -718,13 +718,15 @@ NGUYÊN TẮC CỐT LÕI VÀ ĐIỀU CẤM NGHIÊM NGẶT:
 5. QUY TẮC RIÊNG CHO MÔN TIẾNG ANH (ENGLISH LESSON PLANS):
    - Khi môn học là TIẾNG ANH (hoặc giáo án gốc viết bằng Tiếng Anh):
      + Giữ đúng 100% mẫu cấu trúc giáo án gốc của giáo viên (I. Objectives / Objectives: 1. Knowledge, 2. Competences/Competencies, 3. Qualities; II. Teaching aids / Materials; III. Teaching procedure / Learning activities, Teacher's Activities, Students' Activities, v.v.).
-     + BẮT BUỘC: Toàn bộ nội dung bổ sung tích hợp Năng lực số (Digital Competence) và Năng lực AI (AI Competence) ở phần Mục tiêu và cả 4 bước hoạt động PHẢI ĐƯỢC VIẾT HOÀN TOÀN BẰNG TIẾNG ANH chi tiết, chuyên nghiệp và chuẩn mực sư phạm.
+     + TUYỆT ĐỐI KHÔNG tự động chèn thêm các nhãn/tiêu đề lạ như "Step 1:...", "Step 2:...", "Step 3:...", "Step 4:..." nếu giáo án gốc không có.
+     + BẮT BUỘC: Toàn bộ nội dung bổ sung tích hợp Năng lực số (Digital Competence) và Năng lực AI (AI Competence) ở phần Mục tiêu và trong các hoạt động PHẢI ĐƯỢC VIẾT HOÀN TOÀN BẰNG TIẾNG ANH chuyên môn sư phạm.
      + TUYỆT ĐỐI KHÔNG viết nội dung tích hợp bằng Tiếng Việt chèn vào giáo án Tiếng Anh.
-     + CHI TIẾT 4 BƯỚC HOẠT ĐỘNG DẠY HỌC BẰNG TIẾNG ANH (Bọc trong thẻ <nls>...</nls>):
-       * Step 1 (Delivering the task / Giving instructions): T specifies digital tools, apps, platforms (Quizlet, Padlet, Kahoot, AI chatbot), search keywords or English prompts, task requirements and time limit.
-       * Step 2 (Performing the task): Ss use digital devices/AI to look up info, practice pronunciation/vocabulary/grammar, interact with AI or collaborate in pairs/groups; T observes and supports.
-       * Step 3 (Reporting & Discussion): Ss present digital outputs, share screens/Padlet/AI summaries in English; peers discuss, give constructive feedback.
-       * Step 4 (Assessment & Conclusion): T assesses language accuracy, pronunciation, fluency as well as digital competence & AI ethics/critical thinking, then summarizes key target language knowledge.
+     + LỒNG GHÉP TỰ NHIÊN VÀO NỘI DUNG HOẠT ĐỘNG (Bọc trong thẻ <nls>...</nls>):
+       * Tại phần GV giao nhiệm vụ / Teacher's activities: Chèn hướng dẫn công cụ số (Quizlet, Padlet, Kahoot, AI chatbot), từ khóa tra cứu hoặc prompt tiếng Anh mẫu.
+       * Tại phần HS thực hiện / Students' activities: Chèn thao tác HS dùng thiết bị số, tra cứu, luyện phát âm/hội thoại với AI theo nhóm/cặp.
+       * Tại phần Báo cáo / Thảo luận: Chèn việc HS trình chiếu sản phẩm số (bảng Padlet, kết quả AI) bằng tiếng Anh và nhận xét lẫn nhau.
+       * Tại phần Đánh giá / Nhận xét: Chèn nhận xét của GV về ngôn ngữ và kỹ năng số/sử dụng AI, chốt cấu trúc ngữ pháp/từ vựng.
+     + NGHIÊM CẤM PHÁT SINH KÝ TỰ LẠ, LỜI DẪN HOẶC TIÊU ĐỀ THỪA NGOÀI GIÁO ÁN GỐC.
 
 6. CÔNG THỨC TOÁN HỌC VÀ HÓA HỌC:
    - TUYỆT ĐỐI KHÔNG ĐƯỢC thay đổi, dịch sang LaTeX, hay xóa các mã giữ chỗ có dạng [MATH_ID_...].
