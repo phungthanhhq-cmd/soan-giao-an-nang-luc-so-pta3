@@ -44,13 +44,13 @@ async function startServer() {
         },
       });
 
-      // Danh sách các mô hình thử nghiệm theo thứ tự ưu tiên (hỗ trợ đầy đủ các bản cập nhật mới nhất của Google)
+      // Danh sách các mô hình thử nghiệm theo thứ tự ưu tiên (các mô hình mới nhất và ổn định nhất của Google)
       const modelsToTry = [
-        "gemini-2.5-flash",
-        "gemini-2.0-flash",
-        "gemini-1.5-flash",
-        "gemini-2.5-pro",
-        "gemini-1.5-pro",
+        "gemini-3.6-flash",
+        "gemini-flash-latest",
+        "gemini-3.8-flash",
+        "gemini-3.1-flash-lite",
+        "gemini-3.1-pro-preview",
       ];
 
       const userPrompt = buildUserPrompt(info, options);

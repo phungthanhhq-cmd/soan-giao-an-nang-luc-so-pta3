@@ -218,11 +218,11 @@ async function generateLessonPlanClientSide(
   const userPrompt = buildUserPrompt(info, options);
 
   const modelsToTry = [
-    "gemini-2.5-flash",
-    "gemini-2.0-flash",
-    "gemini-1.5-flash",
-    "gemini-2.5-pro",
-    "gemini-1.5-pro",
+    "gemini-3.6-flash",
+    "gemini-flash-latest",
+    "gemini-3.8-flash",
+    "gemini-3.1-flash-lite",
+    "gemini-3.1-pro-preview",
   ];
 
   const callModel = async (modelId: string) => {
@@ -237,6 +237,24 @@ async function generateLessonPlanClientSide(
     return res.text || "";
   };
 
+  const cleanErrorMessage = (raw: any): string => {
+    if (!raw) return "Lỗi không xác định";
+    let text = typeof raw === "string" ? raw : (raw?.message || JSON.stringify(raw));
+    for (let i = 0; i < 3; i++) {
+      if (typeof text === "string" && (text.trim().startsWith("{") || text.trim().startsWith("["))) {
+        try {
+          const parsed = JSON.parse(text.trim());
+          if (parsed?.error?.message) text = parsed.error.message;
+          else if (parsed?.message) text = parsed.message;
+          else break;
+        } catch (_) {
+          break;
+        }
+      }
+    }
+    return String(text);
+  };
+
   let lastClientErr = "";
   for (const modelId of modelsToTry) {
     try {
@@ -245,7 +263,7 @@ async function generateLessonPlanClientSide(
         return postProcessResult(resText);
       }
     } catch (err: any) {
-      lastClientErr = String(err?.message || err);
+      lastClientErr = cleanErrorMessage(err);
       console.warn(`[Client AI] Model ${modelId} error:`, lastClientErr);
     }
   }
