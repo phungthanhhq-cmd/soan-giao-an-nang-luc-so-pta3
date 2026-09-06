@@ -5,7 +5,7 @@ import ContentInput from './components/ContentInput';
 import ManualNLSInput from './components/ManualNLSInput';
 import ManualAIInput from './components/ManualAIInput';
 import ResultDisplay from './components/ResultDisplay';
-import { Subject, Textbook, ManualNLSEntry, ManualAIEntry, SchoolLevel } from './types';
+import { Subject, Textbook, ManualNLSEntry, ManualAIEntry, SchoolLevel, ImageMap } from './types';
 import { generateNLSLessonPlan } from './services/geminiService';
 import { 
   Sparkles, 
@@ -50,6 +50,7 @@ const App: React.FC = () => {
   const [lessonContent, setLessonContent] = useState<string>('');
   const [distributionContent, setDistributionContent] = useState<string>('');
   const [mathMap, setMathMap] = useState<Record<string, string>>({});
+  const [imageMap, setImageMap] = useState<ImageMap>({});
   
   // New State for Manual NLS Input (Circular 02/2025)
   const [enableNLSIntegration, setEnableNLSIntegration] = useState<boolean>(true);
@@ -254,6 +255,7 @@ const App: React.FC = () => {
                 distributionContent={distributionContent}
                 setDistributionContent={setDistributionContent}
                 setMathMap={setMathMap}
+                setImageMap={setImageMap}
             />
 
             {/* Digital Competency Integration Section (Circular 02/2025) */}
@@ -413,7 +415,7 @@ const App: React.FC = () => {
 
       {/* Result Section */}
       <div className="mt-12 mb-20">
-         <ResultDisplay result={result} loading={loading} mathMap={mathMap} />
+         <ResultDisplay result={result} loading={loading} mathMap={mathMap} imageMap={imageMap} />
       </div>
 
       <footer className="mt-12 text-center text-slate-400 text-sm py-8 border-t border-slate-200/50 bg-slate-50">

@@ -221,7 +221,7 @@ const ManualNLSInput: React.FC<ManualNLSInputProps> = ({
   const checkedCountInCurrent = availableCodesList.filter(item => isCodeChecked(item.code)).length;
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl shadow-indigo-100/50 p-8 border border-white/50 backdrop-blur-sm mt-6 relative overflow-hidden">
+    <div className={`bg-white rounded-3xl shadow-xl shadow-indigo-100/50 p-8 border border-white/50 backdrop-blur-sm mt-6 relative ${isDropdownOpen ? 'z-40' : 'z-20'}`}>
       {/* Header with Switch */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <div className="flex items-center">
@@ -303,7 +303,7 @@ const ManualNLSInput: React.FC<ManualNLSInputProps> = ({
         </div>
 
         {/* Multi-Select Dropdown 3: Mã tích hợp */}
-        <div className="lg:col-span-1 relative" ref={dropdownRef}>
+        <div className={`lg:col-span-1 relative ${isDropdownOpen ? 'z-50' : 'z-10'}`} ref={dropdownRef}>
            <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase ml-1 flex justify-between items-center">
              <span>3. Mã Tích hợp</span>
              {checkedCountInCurrent > 0 && (
@@ -332,7 +332,7 @@ const ManualNLSInput: React.FC<ManualNLSInputProps> = ({
 
            {/* Popup menu with checkboxes */}
            {isDropdownOpen && (
-             <div className="absolute z-30 top-full left-0 mt-1.5 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200/80 p-3.5 text-xs space-y-2.5 max-h-80 overflow-y-auto">
+             <div className="absolute z-50 top-full left-0 mt-1.5 w-80 sm:w-96 md:w-[420px] max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-2xl border border-slate-200/90 p-3.5 text-xs space-y-2.5 max-h-[380px] overflow-y-auto">
                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                  <div>
                    <span className="font-bold text-slate-800 text-[11px] uppercase tracking-wider block">

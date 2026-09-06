@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Loader2, CheckCircle2, FileText, Upload, AlertTriangle, FileBarChart } from 'lucide-react';
 import JSZip from 'jszip';
+import { ImageMap, DocxImageInfo } from '../types';
 
 interface ContentInputProps {
   lessonContent: string;
@@ -8,6 +9,7 @@ interface ContentInputProps {
   distributionContent: string;
   setDistributionContent: (val: string) => void;
   setMathMap: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  setImageMap?: React.Dispatch<React.SetStateAction<ImageMap>>;
 }
 
 // Khai báo thư viện ngoại
@@ -19,7 +21,8 @@ const ContentInput: React.FC<ContentInputProps> = ({
   setLessonContent,
   distributionContent,
   setDistributionContent,
-  setMathMap
+  setMathMap,
+  setImageMap
 }) => {
   const lessonInputRef = useRef<HTMLInputElement>(null);
   const distInputRef = useRef<HTMLInputElement>(null);
@@ -38,9 +41,10 @@ const ContentInput: React.FC<ContentInputProps> = ({
     setProcessing(true);
     setFileName(file.name);
     
-    // Clear math map when a new lesson file is uploaded
+    // Clear math map and image map when a new lesson file is uploaded
     if (isLesson) {
       setMathMap({});
+      if (setImageMap) setImageMap({});
     }
     
     try {
@@ -53,7 +57,7 @@ const ContentInput: React.FC<ContentInputProps> = ({
         file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || 
         file.name.endsWith(".docx")
       ) {
-        text = await extractTextFromDOCX(arrayBuffer);
+        text = await extractTextFromDOCX(arrayBuffer, isLesson);
       } else {
         alert("Định dạng file không được hỗ trợ. Vui lòng chọn PDF hoặc DOCX.");
         setFileName(null);
@@ -88,7 +92,15 @@ const ContentInput: React.FC<ContentInputProps> = ({
       const timestamp = Date.now();
       const newMathMap: Record<string, string> = {};
 
-      // Replace OMML math blocks with plain text wrapped in [MATH_ID_X]
+      // Replace OMML math blocks (both inline <m:oMath> and display <m:oMathPara>) with plain text wrapped in [MATH_ID_X]
+      // Support oMathPara first so display equations with paragraph settings aren't split
+      xml = xml.replace(/<m:oMathPara[^>]*>([\s\S]*?)<\/m:oMathPara>/g, (match) => {
+        const mathId = `MATH_ID_${timestamp}_${mathCounter++}`;
+        newMathMap[mathId] = match;
+        return `<w:r><w:t xml:space="preserve">[${mathId}]</w:t></w:r>`;
+      });
+
+      // Support standalone or inline oMath
       xml = xml.replace(/<m:oMath[^>]*>([\s\S]*?)<\/m:oMath>/g, (match) => {
         const mathId = `MATH_ID_${timestamp}_${mathCounter++}`;
         newMathMap[mathId] = match; // Store the original OMML XML
@@ -107,9 +119,85 @@ const ContentInput: React.FC<ContentInputProps> = ({
     }
   };
 
-  const extractTextFromDOCX = async (arrayBuffer: ArrayBuffer): Promise<string> => {
+  const extractImagesFromDOCX = async (zip: JSZip): Promise<Record<string, DocxImageInfo>> => {
+    const extractedMap: Record<string, DocxImageInfo> = {};
+    try {
+      const relsFile = zip.file("word/_rels/document.xml.rels");
+      if (!relsFile) return extractedMap;
+
+      const relsXml = await relsFile.async("string");
+      const relMap = new Map<string, string>(); // rId -> targetPath inside zip
+      const relRegex = /<Relationship[^>]+Id="([^"]+)"[^>]+Target="([^"]+)"/g;
+      let relMatch;
+      while ((relMatch = relRegex.exec(relsXml)) !== null) {
+        let target = relMatch[2].replace(/^(\.\.\/)+/, '');
+        if (!target.startsWith('word/')) {
+          target = 'word/' + target.replace(/^\//, '');
+        }
+        relMap.set(relMatch[1], target);
+      }
+
+      // Check document.xml for the sequential order of r:embed or r:link image references
+      const docXmlFile = zip.file("word/document.xml");
+      let sequentialRIds: string[] = [];
+      if (docXmlFile) {
+        const docXml = await docXmlFile.async("string");
+        const embedRegex = /(?:r:embed|r:link)="([^"]+)"/g;
+        let m;
+        while ((m = embedRegex.exec(docXml)) !== null) {
+          const rId = m[1];
+          if (relMap.has(rId) && !sequentialRIds.includes(rId)) {
+            sequentialRIds.push(rId);
+          }
+        }
+      }
+
+      // Fallback: any other image relationships
+      for (const [rId] of relMap.entries()) {
+        if (!sequentialRIds.includes(rId)) {
+          sequentialRIds.push(rId);
+        }
+      }
+
+      let imgCounter = 0;
+      for (const rId of sequentialRIds) {
+        const targetPath = relMap.get(rId);
+        if (!targetPath) continue;
+        const file = zip.file(targetPath);
+        if (!file) continue;
+
+        const base64 = await file.async("base64");
+        const ext = targetPath.split('.').pop()?.toLowerCase() || 'png';
+        const mime = ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : ext === 'gif' ? 'image/gif' : ext === 'svg' ? 'image/svg+xml' : 'image/png';
+        const dataUri = `data:${mime};base64,${base64}`;
+
+        const imgId = `IMG_ID_${imgCounter++}`;
+        extractedMap[imgId] = {
+          dataUri,
+          base64,
+          mime,
+          ext
+        };
+      }
+    } catch (e) {
+      console.warn("Lỗi trích xuất hình ảnh từ DOCX:", e);
+    }
+    return extractedMap;
+  };
+
+  const extractTextFromDOCX = async (arrayBuffer: ArrayBuffer, isLesson: boolean): Promise<string> => {
     if (typeof mammoth === 'undefined') return "";
     try {
+        // First, extract images using JSZip if this is a lesson file
+        let newImages: Record<string, DocxImageInfo> = {};
+        if (isLesson) {
+          const zip = await JSZip.loadAsync(arrayBuffer);
+          newImages = await extractImagesFromDOCX(zip);
+          if (Object.keys(newImages).length > 0 && setImageMap) {
+            setImageMap(newImages);
+          }
+        }
+
         // Preprocess to extract math formulas before mammoth ignores them
         const processedBuffer = await preprocessDOCXMath(arrayBuffer);
 
@@ -117,9 +205,17 @@ const ContentInput: React.FC<ContentInputProps> = ({
         const result = await mammoth.convertToHtml({ arrayBuffer: processedBuffer });
         let html = result.value;
         
-        // Remove heavy base64 images to prevent context overload/lag for the AI
-        // We replace them with a placeholder text so the user knows an image was there
-        html = html.replace(/<img[^>]*src="data:image\/[^;]+;base64,[^"]+"[^>]*>/g, ' [HÌNH ẢNH ĐÃ LƯỢC BỎ] ');
+        // Match base64 images generated by mammoth and replace each with sequential [IMG_ID_X] placeholder!
+        // If imageMap has corresponding images, we map sequentially.
+        const imageKeys = Object.keys(newImages);
+        let imgReplaceIdx = 0;
+        html = html.replace(/<img[^>]*src="data:image\/[^;]+;base64,[^"]+"[^>]*>/g, () => {
+          if (imgReplaceIdx < imageKeys.length) {
+            const key = imageKeys[imgReplaceIdx++];
+            return ` [${key}] `;
+          }
+          return ` [IMG_ID_${imgReplaceIdx++}] `;
+        });
         
         return html;
     } catch (e) {

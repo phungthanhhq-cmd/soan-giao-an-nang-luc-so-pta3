@@ -6,6 +6,7 @@ import {
   Document, 
   Paragraph, 
   TextRun, 
+  ImageRun,
   HeadingLevel, 
   Packer, 
   UnderlineType, 
@@ -21,14 +22,18 @@ import {
   ImportedXmlComponent
 } from 'docx';
 import FileSaver from 'file-saver';
+import JSZip from 'jszip';
+import { ImageMap } from '../types';
+import { ensureIntegratedContentRed } from '../services/geminiService';
 
 interface ResultDisplayProps {
   result: string | null;
   loading: boolean;
   mathMap: Record<string, string>;
+  imageMap?: ImageMap;
 }
 
-const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, loading, mathMap }) => {
+const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, loading, mathMap, imageMap = {} }) => {
   const [showPreview, setShowPreview] = useState(false);
   const [isGeneratingDoc, setIsGeneratingDoc] = useState(false);
 
@@ -45,7 +50,13 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, loading, mathMap 
     // 3. Clean consecutive asterisks like **** or *** to standard **
     clean = clean.replace(/\*{3,}/g, "**");
 
-    // 4. Remove common AI intros
+    // 4. Normalize escaped math and image placeholders from Markdown (e.g. \[MATH_ID_...\] or [MATH\_ID\_...], \[IMG_ID_...\])
+    clean = clean.replace(/\\\[(MATH[_\\0-9]+)\\\]/g, '[$1]');
+    clean = clean.replace(/MATH\\_ID\\_/g, 'MATH_ID_');
+    clean = clean.replace(/\\\[(IMG[_\\0-9]+)\\\]/g, '[$1]');
+    clean = clean.replace(/IMG\\_ID\\_/g, 'IMG_ID_');
+
+    // 5. Remove common AI intros
     const lines = clean.split('\n');
     if (lines.length > 0) {
         const firstLine = lines[0].trim().toLowerCase();
@@ -60,7 +71,10 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, loading, mathMap 
              if (lines.length > 0 && lines[0].trim() === "") lines.shift(); 
         }
     }
-    return lines.join('\n').trim();
+    const joined = lines.join('\n').trim();
+
+    // 6. Đảm bảo toàn bộ nội dung tích hợp (Mục tiêu 2.3 Năng lực số, 2.4 Năng lực AI và các mã năng lực) được bọc thẻ <nls>...</nls> để bôi đỏ
+    return ensureIntegratedContentRed(joined);
   };
 
   const safeResult = result ? cleanResultText(result) : null;
@@ -110,17 +124,61 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, loading, mathMap 
       if (!text) return;
 
       // 1. Math OMML placeholders
-      if (text.includes('[MATH_ID_')) {
-        const parts = text.split(/(\[MATH_ID_\d+_\d+\])/g);
+      if (text.includes('MATH_ID_')) {
+        const parts = text.split(/(\[?\s*MATH_ID_\d+_\d+\s*\]?)/g);
         if (parts.length > 1) {
           parts.forEach(part => {
-            if (part.startsWith('[MATH_ID_') && part.endsWith(']')) {
-              const mathId = part.slice(1, -1);
+            const mathMatch = part.match(/MATH_ID_\d+_\d+/);
+            if (mathMatch) {
+              const mathId = mathMatch[0];
               const omml = mathMap[mathId];
               if (omml) {
                 try {
-                  runs.push(ImportedXmlComponent.fromXmlString(omml));
+                  const comp = ImportedXmlComponent.fromXmlString(omml);
+                  const mathElements = Array.isArray((comp as any).root) && (comp as any).root.length > 0
+                    ? (comp as any).root
+                    : [comp];
+                  runs.push(...mathElements);
                 } catch (e) {
+                  console.warn("Lỗi phân tích OMML:", e);
+                  emitRun(part, styles);
+                }
+              } else {
+                emitRun(part, styles);
+              }
+            } else {
+              processSegment(part, styles);
+            }
+          });
+          return;
+        }
+      }
+
+      // 1.1 Image placeholders [IMG_ID_X]
+      if (text.includes('IMG_ID_')) {
+        const parts = text.split(/(\[?\s*IMG_ID_\d+\s*\]?)/g);
+        if (parts.length > 1) {
+          parts.forEach(part => {
+            const imgMatch = part.match(/IMG_ID_\d+/);
+            if (imgMatch) {
+              const imgId = imgMatch[0];
+              const imgInfo = imageMap[imgId];
+              if (imgInfo && imgInfo.base64) {
+                try {
+                  const binaryString = window.atob(imgInfo.base64);
+                  const bytes = new Uint8Array(binaryString.length);
+                  for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                  }
+                  runs.push(new ImageRun({
+                    data: bytes,
+                    transformation: {
+                      width: 450,
+                      height: 300,
+                    },
+                  }));
+                } catch (e) {
+                  console.warn("Lỗi chèn ImageRun:", e);
                   emitRun(part, styles);
                 }
               } else {
@@ -367,52 +425,65 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, loading, mathMap 
           continue;
         }
 
+        // Check if the line is wrapped in <nls> tags (to maintain red styling on headings & lists)
+        const isNlsLine = trimmed.startsWith('<nls>') && trimmed.endsWith('</nls>');
+        const unwrap = (s: string) => s.replace(/^<nls>/i, '').replace(/<\/nls>$/i, '').trim();
+        const coreText = isNlsLine ? unwrap(trimmed) : trimmed;
+
         // 3. Heading Handling
-        if (trimmed.startsWith('## ')) {
+        if (coreText.startsWith('## ')) {
+          const innerContent = coreText.replace('## ', '').trim();
+          const toFormat = isNlsLine ? `<nls>${innerContent}</nls>` : innerContent;
           children.push(new Paragraph({
-            children: parseTextWithFormatting(trimmed.replace('## ', '')),
+            children: parseTextWithFormatting(toFormat),
             heading: HeadingLevel.HEADING_1,
             spacing: PARAGRAPH_SPACING,
             indent: { firstLine: FIRST_LINE_INDENT },
             alignment: AlignmentType.JUSTIFIED
           }));
         } 
-        else if (trimmed.startsWith('### ')) {
+        else if (coreText.startsWith('### ')) {
+          const innerContent = coreText.replace('### ', '').trim();
+          const toFormat = isNlsLine ? `<nls>${innerContent}</nls>` : innerContent;
           children.push(new Paragraph({
-             children: parseTextWithFormatting(trimmed.replace('### ', '')),
+            children: parseTextWithFormatting(toFormat),
             heading: HeadingLevel.HEADING_2,
             spacing: PARAGRAPH_SPACING,
             indent: { firstLine: FIRST_LINE_INDENT },
             alignment: AlignmentType.JUSTIFIED
           }));
         }
-        else if (trimmed.startsWith('#### ')) {
-            children.push(new Paragraph({
-               children: parseTextWithFormatting(trimmed.replace('#### ', '')),
-              heading: HeadingLevel.HEADING_3,
-              spacing: PARAGRAPH_SPACING,
-              indent: { firstLine: FIRST_LINE_INDENT },
-              alignment: AlignmentType.JUSTIFIED
-            }));
+        else if (coreText.startsWith('#### ')) {
+          const innerContent = coreText.replace('#### ', '').trim();
+          const toFormat = isNlsLine ? `<nls>${innerContent}</nls>` : innerContent;
+          children.push(new Paragraph({
+            children: parseTextWithFormatting(toFormat),
+            heading: HeadingLevel.HEADING_3,
+            spacing: PARAGRAPH_SPACING,
+            indent: { firstLine: FIRST_LINE_INDENT },
+            alignment: AlignmentType.JUSTIFIED
+          }));
         }
         // 4. List Handling
-        else if (trimmed.startsWith('- ') || trimmed.startsWith('+ ') || trimmed.startsWith('* ')) {
-            const content = trimmed.substring(2);
-            children.push(new Paragraph({
-                children: parseTextWithFormatting(`- ${content}`),
-                spacing: PARAGRAPH_SPACING,
-                indent: { firstLine: FIRST_LINE_INDENT },
-                alignment: AlignmentType.JUSTIFIED
-            }));
+        else if (coreText.startsWith('- ') || coreText.startsWith('+ ') || coreText.startsWith('* ')) {
+          const marker = coreText.substring(0, 2);
+          const content = coreText.substring(2).trim();
+          const toFormat = isNlsLine ? `<nls>${marker}${content}</nls>` : `${marker}${content}`;
+          children.push(new Paragraph({
+            children: parseTextWithFormatting(toFormat),
+            spacing: PARAGRAPH_SPACING,
+            indent: { firstLine: FIRST_LINE_INDENT },
+            alignment: AlignmentType.JUSTIFIED
+          }));
         }
         // 5. Regular Text
         else {
-             children.push(new Paragraph({
-                children: parseTextWithFormatting(trimmed),
-                spacing: PARAGRAPH_SPACING,
-                indent: { firstLine: FIRST_LINE_INDENT },
-                alignment: AlignmentType.JUSTIFIED
-            }));
+          children.push(new Paragraph({
+            children: parseTextWithFormatting(trimmed),
+            spacing: PARAGRAPH_SPACING,
+            indent: { firstLine: FIRST_LINE_INDENT },
+            alignment: AlignmentType.JUSTIFIED
+          }));
         }
       }
 
@@ -437,15 +508,15 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, loading, mathMap 
               }
             },
             heading1: {
-                run: { size: 28, bold: true, font: "Times New Roman", color: "000000" },
+                run: { size: 28, bold: true, font: "Times New Roman" },
                 paragraph: { spacing: { before: 120, after: 0 }, indent: { firstLine: FIRST_LINE_INDENT } }
             },
             heading2: {
-                run: { size: 28, bold: true, font: "Times New Roman", color: "000000" },
+                run: { size: 28, bold: true, font: "Times New Roman" },
                 paragraph: { spacing: { before: 120, after: 0 }, indent: { firstLine: FIRST_LINE_INDENT } }
             },
             heading3: {
-                run: { size: 28, bold: true, font: "Times New Roman", color: "000000" },
+                run: { size: 28, bold: true, font: "Times New Roman" },
                 paragraph: { spacing: { before: 120, after: 0 }, indent: { firstLine: FIRST_LINE_INDENT } }
             }
           }
@@ -465,8 +536,39 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, loading, mathMap 
         }],
       });
 
-      const blob = await Packer.toBlob(doc);
-      FileSaver.saveAs(blob, "Giao_an_NLS_Chuan.docx");
+      let finalBlob = await Packer.toBlob(doc);
+
+      // Post-packaging OpenXML sanitization:
+      // Guarantee no invalid tags like <undefined> ever slip through, and ensure math namespace
+      try {
+        const zip = await JSZip.loadAsync(finalBlob);
+        let docXml = await zip.file("word/document.xml")?.async("string");
+        if (docXml) {
+          let modified = false;
+          if (docXml.includes("<undefined>") || docXml.includes("</undefined>")) {
+            docXml = docXml.replace(/<\/?undefined>/gi, "");
+            modified = true;
+          }
+          if (docXml.includes("<m:oMath") && !docXml.includes("xmlns:m=")) {
+            docXml = docXml.replace(
+              "<w:document",
+              '<w:document xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"'
+            );
+            modified = true;
+          }
+          if (modified) {
+            zip.file("word/document.xml", docXml);
+            finalBlob = await zip.generateAsync({
+              type: "blob",
+              mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            });
+          }
+        }
+      } catch (zipErr) {
+        console.warn("Lỗi kiểm tra hậu kỳ DOCX qua JSZip:", zipErr);
+      }
+
+      FileSaver.saveAs(finalBlob, "Giao_an_NLS_Chuan.docx");
     } catch (error) {
       console.error("Lỗi tạo docx:", error);
       alert("Lỗi khi tạo file DOCX. Đang tải xuống file văn bản thay thế.");
@@ -553,7 +655,16 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, loading, mathMap 
       {showPreview && (
         <div className="p-10 prose prose-slate max-w-none prose-p:text-slate-600 prose-headings:text-indigo-900 prose-headings:font-bold prose-strong:text-indigo-700 prose-li:text-slate-600 border-t border-slate-200 bg-white">
             <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-            {safeResult.replace(/\[MATH_ID_\d+_\d+\]/g, '[Công thức Toán học]')}
+            {safeResult
+              .replace(/\[MATH_ID_\d+_\d+\]/g, '[Công thức Toán học]')
+              .replace(/\[(IMG_ID_\d+)\]/g, (match, id) => {
+                const img = imageMap[id];
+                if (img && img.dataUri) {
+                  return `<img src="${img.dataUri}" alt="Hình ảnh bài học" class="my-4 max-w-full rounded border border-slate-200 shadow-sm" style="max-height: 400px; object-fit: contain;" />`;
+                }
+                return '<span class="inline-block px-2 py-1 bg-slate-100 text-slate-500 rounded text-xs">[Hình ảnh bài học]</span>';
+              })
+            }
             </ReactMarkdown>
         </div>
       )}

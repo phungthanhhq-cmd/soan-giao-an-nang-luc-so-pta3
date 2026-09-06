@@ -166,12 +166,23 @@ export const buildUserPrompt = (info: LessonInfo, options: ProcessingOptions): s
          + Bước 2: Thực hiện nhiệm vụ (Nêu rõ HS tiếp nhận nhiệm vụ, thao tác trên thiết bị số/phần mềm ra sao, khai thác/xử lý thông tin số/AI thế nào, GV quan sát hỗ trợ gì).
          + Bước 3: Báo cáo, thảo luận (Nêu rõ HS báo cáo sản phẩm số thế nào qua slide, padlet, màn hình trình chiếu số, thảo luận phản biện ra sao).
          + Bước 4: Kết luận, nhận định (Nêu rõ GV nhận xét, đánh giá kết quả và kỹ năng số/kỹ năng AI của học sinh như thế nào, chốt chuẩn kiến thức).
-    5. BẢO TOÀN CÔNG THỨC TOÁN HỌC VÀ HÓA HỌC (QUAN TRỌNG NHẤT): 
-       - Bạn TUYỆT ĐỐI KHÔNG ĐƯỢC thay đổi, dịch, hay xóa các mã giữ chỗ [MATH_ID_...]. Phải giữ nguyên vẹn các mã này trong văn bản đầu ra.
-       - KHÔNG ĐƯỢC đặt các mã này bên trong các thẻ định dạng như in đậm (**), in nghiêng (*).
+    5. BẢO TOÀN CÔNG THỨC MÔN KHOA HỌC TỰ NHIÊN, TOÁN, VẬT LÍ, HÓA HỌC, SINH HỌC (QUAN TRỌNG NHẤT): 
+       - Đối với tất cả các môn Khoa học tự nhiên (Toán, KHTN, Vật lí, Hóa học, Sinh học): BẮT BUỘC GIỮ NGUYÊN 100% ĐÚNG TẤT CẢ CÔNG THỨC, PHƯƠNG TRÌNH, PHẢN ỨNG HÓA HỌC, PHÂN SỐ, CĂN THỨC, LŨY THỪA TỪ GIÁO ÁN GỐC.
+       - TUYỆT ĐỐI KHÔNG ĐƯỢC TỰ Ý THAY ĐỔI, KHÔNG RÚT GỌN, KHÔNG SỬA ĐỔI BẤT KỲ KÝ HIỆU KHOA HỌC HOẶC ĐƠN VỊ ĐO NÀO.
+       - Bạn TUYỆT ĐỐI KHÔNG ĐƯỢC thay đổi, dịch, hay xóa các mã giữ chỗ [MATH_ID_...] và các mã hình ảnh [IMG_ID_...]. Phải giữ nguyên vẹn 100% các mã này trong văn bản đầu ra đúng vị trí của chúng.
+       - KHÔNG ĐƯỢC đặt các mã [MATH_ID_...] hoặc [IMG_ID_...] bên trong các thẻ định dạng như in đậm (**), in nghiêng (*).
        - TUYỆT ĐỐI KHÔNG SỬ DỤNG LATEX (DẤU $ HOẶC $$) TRONG TOÀN BỘ VĂN BẢN ĐẦU RA.
-       - Đối với các công thức hóa học hoặc các chữ có chỉ số dưới/chỉ số trên (ví dụ: C<sub>15</sub>H<sub>31</sub>COOH, m<sup>2</sup>), hãy giữ nguyên thẻ HTML <sub> và <sup>. KHÔNG chuyển thành dạng $C_{15}H_{31}COOH$.
-    6. NỘI DUNG BỔ SUNG: Dùng thẻ <nls>...</nls> đóng mở chuẩn xác để bao bọc các nội dung được tích hợp thêm vào (giúp hệ thống nhận diện và hiển thị màu đỏ/nổi bật).
+       - Đối với các công thức hóa học hoặc các chữ có chỉ số dưới/chỉ số trên (ví dụ: H<sub>2</sub>O, CO<sub>2</sub>, CaCO<sub>3</sub>, C<sub>15</sub>H<sub>31</sub>COOH, m<sup>2</sup>, m/s<sup>2</sup>), hãy giữ nguyên thẻ HTML <sub> và <sup>. KHÔNG chuyển thành dạng $C_{15}H_{31}COOH$.
+    6. BẮT BUỘC BÔI ĐỎ BẰNG THẺ <nls>...</nls> CHO TOÀN BỘ NỘI DUNG TÍCH HỢP:
+       - Dùng thẻ <nls>...</nls> đóng mở chuẩn xác để bao bọc TOÀN BỘ các nội dung được tích hợp thêm vào (cả ở phần Mục tiêu năng lực số/AI và trong toàn bộ các bước hoạt động dạy học):
+         + TẠI PHẦN MỤC TIÊU BÀI HỌC (MỤC NĂNG LỰC): BẮT BUỘC bọc thẻ <nls>...</nls> cho cả tiêu đề "2.3. Năng lực số", "2.4. Năng lực Trí tuệ nhân tạo (AI)" và TOÀN BỘ các dòng gạch đầu dòng mã NLS, mã AI bên dưới.
+           Ví dụ chuẩn mẫu:
+           <nls>**2.3. Năng lực số**</nls>
+           <nls>- Mã [1.1.TC1a - 1.1. Duyệt, tìm kiếm và lọc dữ liệu]: Giải thích rõ ràng nhu cầu thông tin cá nhân cho các mục đích cụ thể khi tìm kiếm, tra cứu tài liệu số về bài học.</nls>
+           <nls>**2.4. Năng lực Trí tuệ nhân tạo (AI)**</nls>
+           <nls>- Mã [6.A1.1 - Tính chủ động của con người]: Giải thích AI là sản phẩm do con người tạo ra, lập trình và điều khiển; AI không tự sinh ra và không hoạt động độc lập khi khai thác thông tin và tìm hiểu bài học.</nls>
+           *LƯU Ý QUAN TRỌNG: Bọc thẻ <nls>...</nls> trên TỪNG DÒNG riêng biệt (mỗi dòng một cặp thẻ đóng mở), tuyệt đối không mở thẻ ở dòng này rồi xuống nhiều dòng sau mới đóng.
+         + TẠI PHẦN TIẾN TRÌNH HOẠT ĐỘNG DẠY HỌC (4 bước): BẮT BUỘC bọc thẻ <nls>...</nls> cho mọi câu chữ nội dung bổ sung liên quan đến Năng lực số hoặc Năng lực AI (GV giao nhiệm vụ số/AI, HS thao tác thiết bị số/prompt AI, HS báo cáo sản phẩm số, GV đánh giá kỹ năng số/AI) để hiển thị màu đỏ nổi bật trong văn bản. Không được để sót bất kỳ nội dung tích hợp nào mà không bọc trong <nls>...</nls>.
     
     ĐỊNH DẠNG ĐẦU RA (NGHIÊM NGẶT):
     - Trả về toàn bộ nội dung giáo án dưới dạng Markdown.
@@ -185,6 +196,80 @@ export const buildUserPrompt = (info: LessonInfo, options: ProcessingOptions): s
     NỘI DUNG GIÁO ÁN GỐC (CÓ THỂ LÀ HTML):
     ${info.content}
   `;
+};
+
+// Helper: Tự động đảm bảo toàn bộ nội dung tích hợp (Mục tiêu NLS & AI và các mã năng lực) được bọc <nls>...</nls> để bôi đỏ
+export const ensureIntegratedContentRed = (text: string): string => {
+  if (!text) return "";
+
+  // 1. Phân rã khối <nls>...</nls> nhiều dòng thành từng dòng riêng lẻ để tránh mất style khi xuất Word theo dòng
+  let processed = text.replace(/<nls>([\s\S]*?)<\/nls>/gi, (_match, inner) => {
+    return inner
+      .split('\n')
+      .map((line: string) => {
+        const trimmed = line.trim();
+        if (!trimmed) return line;
+        if (line.includes('<nls>') && line.includes('</nls>')) return line;
+        return `<nls>${line}</nls>`;
+      })
+      .join('\n');
+  });
+
+  // 2. Quét để tự động bọc <nls>...</nls> cho mục Năng lực số, Năng lực AI và các mã năng lực nếu AI quên gắn thẻ
+  const lines = processed.split('\n');
+  let inIntegratedObjectivesBlock = false;
+
+  const resultLines = lines.map(line => {
+    const trimmed = line.trim();
+    if (!trimmed) return line;
+
+    // Dấu hiệu nhận biết bắt đầu đề mục NLS hoặc NLA/AI trong mục tiêu
+    const isNLSHeading = /(?:^|\s)(?:(?:\d+\.)*\d+\.\s*)?Năng lực số\b/i.test(trimmed);
+    const isAIHeading = /(?:^|\s)(?:(?:\d+\.)*\d+\.\s*)?Năng lực (?:Trí tuệ nhân tạo|AI)\b/i.test(trimmed);
+    
+    // Dấu hiệu kết thúc mục năng lực tích hợp (sang mục phẩm chất hoặc mục II thiết bị)
+    const isExitSection = /^(?:#+\s*)?(?:3\.\s*(?:Về\s*)?Phẩm chất|[I|V|X]+\.\s*(?:THIẾT BỊ|ĐỒ DÙNG|TIẾN TRÌNH|HOẠT ĐỘNG)|B\.\s*HOẠT ĐỘNG)/i.test(trimmed);
+
+    if (isExitSection) {
+      inIntegratedObjectivesBlock = false;
+      return line;
+    }
+
+    if (isNLSHeading || isAIHeading) {
+      inIntegratedObjectivesBlock = true;
+      if (!line.includes('<nls>')) {
+        return `<nls>${line}</nls>`;
+      }
+      return line;
+    }
+
+    // Nhận diện dòng gạch đầu dòng chứa mã năng lực: ví dụ "- Mã [1.1...", "- [1.1...", "- Mã [6.A...", "+ Mã ["
+    const isCompetencyCodeLine = /^(?:[-+*]\s*)?(?:Mã\s*)?\[(?:1\.[123]|2\.[1-6]|3\.[1-4]|4\.[1-4]|5\.[1-4]|6\.[123]|6\.[ABCD])/i.test(trimmed) ||
+                                /^(?:[-+*]\s*)?Mã\s*\[/i.test(trimmed);
+
+    if (isCompetencyCodeLine) {
+      if (!line.includes('<nls>')) {
+        return `<nls>${line}</nls>`;
+      }
+      return line;
+    }
+
+    // Nếu đang trong khối mục tiêu NLS/AI
+    if (inIntegratedObjectivesBlock) {
+      // Nếu gặp đề mục số khác không phải NLS/AI (ví dụ "2.5. Phẩm chất", "3.")
+      if (/^(?:#+\s*)?(?:2\.[5-9]|3\.)\s+/i.test(trimmed)) {
+        inIntegratedObjectivesBlock = false;
+        return line;
+      }
+      if (!line.includes('<nls>')) {
+        return `<nls>${line}</nls>`;
+      }
+    }
+
+    return line;
+  });
+
+  return resultLines.join('\n');
 };
 
 export const postProcessResult = (text: string): string => {
@@ -202,6 +287,10 @@ export const postProcessResult = (text: string): string => {
   fixed = fixed.replace(/_\{([^}]+)\}/g, "<sub>$1</sub>");
   fixed = fixed.replace(/\^\{([^}]+)\}/g, "<sup>$1</sup>");
   fixed = fixed.replace(/([A-Za-z])\{([0-9]+)\}/g, "$1<sub>$2</sub>");
+
+  // Áp dụng bôi đỏ tự động cho toàn bộ nội dung tích hợp (Mục tiêu 2.3/2.4 và các mã NLS/AI)
+  fixed = ensureIntegratedContentRed(fixed);
+
   return fixed;
 };
 

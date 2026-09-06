@@ -728,11 +728,24 @@ NGUYÊN TẮC CỐT LÕI VÀ ĐIỀU CẤM NGHIÊM NGẶT:
        * Tại phần Đánh giá / Nhận xét: Chèn nhận xét của GV về ngôn ngữ và kỹ năng số/sử dụng AI, chốt cấu trúc ngữ pháp/từ vựng.
      + NGHIÊM CẤM PHÁT SINH KÝ TỰ LẠ, LỜI DẪN HOẶC TIÊU ĐỀ THỪA NGOÀI GIÁO ÁN GỐC.
 
-6. CÔNG THỨC TOÁN HỌC VÀ HÓA HỌC:
+6. QUY TẮC BÔI ĐỎ BẰNG THẺ <nls>...</nls> (BẮT BUỘC CHO TOÀN BỘ NỘI DUNG TÍCH HỢP):
+   - Dùng thẻ <nls>...</nls> đóng mở chuẩn xác để bao bọc TOÀN BỘ các nội dung được tích hợp thêm vào (cả ở phần MỤC TIÊU BÀI HỌC và trong toàn bộ TIẾN TRÌNH HOẠT ĐỘNG DẠY HỌC):
+     + TẠI PHẦN MỤC TIÊU (MỤC NĂNG LỰC): BẮT BUỘC bọc thẻ <nls>...</nls> cho cả tiêu đề đề mục (ví dụ: <nls>**2.3. Năng lực số**</nls>, <nls>**2.4. Năng lực Trí tuệ nhân tạo (AI)**</nls>) và TOÀN BỘ các dòng gạch đầu dòng mã NLS, mã AI bên dưới.
+       Ví dụ chuẩn 100%:
+       <nls>**2.3. Năng lực số**</nls>
+       <nls>- Mã [1.1.TC1a - 1.1. Duyệt, tìm kiếm và lọc dữ liệu]: Giải thích rõ ràng nhu cầu thông tin cá nhân cho các mục đích cụ thể khi tìm kiếm, tra cứu tài liệu số về bài học.</nls>
+       <nls>**2.4. Năng lực Trí tuệ nhân tạo (AI)**</nls>
+       <nls>- Mã [6.A1.1 - Tính chủ động của con người]: Giải thích AI là sản phẩm do con người tạo ra, lập trình và điều khiển; AI không tự sinh ra và không hoạt động độc lập khi khai thác thông tin và tìm hiểu bài học.</nls>
+       *QUY TẮC: Bọc thẻ <nls>...</nls> trên TỪNG DÒNG riêng biệt (mỗi dòng một cặp thẻ đóng mở), tuyệt đối KHÔNG mở thẻ ở dòng này rồi xuống nhiều dòng sau mới đóng.
+     + TẠI PHẦN HOẠT ĐỘNG DẠY HỌC (4 bước): BẮT BUỘC bọc thẻ <nls>...</nls> cho mọi câu chữ nội dung tích hợp NLS và AI được chèn vào các bước (GV giao nhiệm vụ số/công cụ AI, HS thao tác thiết bị số/prompt AI, HS báo cáo sản phẩm số, GV đánh giá năng lực số/AI).
+
+7. BẢO TOÀN CÔNG THỨC TOÁN HỌC, VẬT LÍ, HÓA HỌC, SINH HỌC VÀ CÁC MÔN KHOA HỌC TỰ NHIÊN:
    - TUYỆT ĐỐI KHÔNG ĐƯỢC thay đổi, dịch sang LaTeX, hay xóa các mã giữ chỗ có dạng [MATH_ID_...].
-   - Phải giữ nguyên vẹn các mã này trong văn bản đầu ra.
-   - KHÔNG ĐƯỢC đặt các mã này bên trong các thẻ định dạng như in đậm (**), in nghiêng (*).
-   - Dùng thẻ <nls>...</nls> đóng mở chuẩn xác để bao bọc các nội dung NLS hoặc NLA được tích hợp bổ sung vào hoạt động dạy học.
+   - Đối với tất cả các môn Khoa học tự nhiên (Toán, KHTN, Vật lí, Hóa học, Sinh học): GIỮ NGUYÊN 100% ĐÚNG TẤT CẢ CÔNG THỨC, PHƯƠNG TRÌNH, PHẢN ỨNG HÓA HỌC, PHÂN SỐ, CĂN THỨC, LŨY THỪA TỪ BÀI HỌC GỐC CỦA NGƯỜI DÙNG.
+   - TUYỆT ĐỐI KHÔNG TỰ Ý THAY ĐỔI, KHÔNG RÚT GỌN, KHÔNG SỬA ĐỔI BẤT KỲ KÝ HIỆU KHOA HỌC HOẶC ĐƠN VỊ ĐO NÀO.
+   - Giữ nguyên toàn bộ các thẻ HTML <sub> (chỉ số dưới), <sup> (chỉ số trên), ví dụ: H<sub>2</sub>O, CO<sub>2</sub>, CaCO<sub>3</sub>, m<sup>2</sup>, m/s<sup>2</sup>.
+   - Giữ nguyên các ký hiệu toán học (=, ≠, ≈, ≤, ≥, ±, ⊥, ∥, ∈, ⊂, ∪, ∩, √, °, °C, Δ, π, α, β, λ, Ω, μ).
+   - KHÔNG ĐƯỢC đặt các mã [MATH_ID_...] hoặc [IMG_ID_...] bên trong các thẻ định dạng như in đậm (**), in nghiêng (*).
 
 ĐẦU RA BẮT BUỘC:
 - Trả về toàn bộ nội dung giáo án hoàn chỉnh dưới dạng Markdown.

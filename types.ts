@@ -66,6 +66,15 @@ export interface LessonInfo {
   manualAI?: ManualAIEntry[]; // AI competence inputs (QD 2422)
 }
 
+export interface DocxImageInfo {
+  dataUri: string; // base64 data URI (e.g. data:image/png;base64,...)
+  base64: string;  // raw base64 string
+  mime: string;    // MIME type
+  ext: string;     // file extension
+}
+
+export type ImageMap = Record<string, DocxImageInfo>;
+
 export interface ProcessingOptions {
   analyzeOnly: boolean;
   detailedReport: boolean;

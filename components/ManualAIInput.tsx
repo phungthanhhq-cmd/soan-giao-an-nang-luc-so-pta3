@@ -185,9 +185,11 @@ const ManualAIInput: React.FC<ManualAIInputProps> = ({
     : (AI_2422_TOPICS[selectedStrand] || []);
 
   return (
-    <div className="bg-white rounded-3xl shadow-sm border border-purple-100 p-5 md:p-6 transition-all duration-300 relative overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-purple-50 rounded-full blur-3xl -z-10 pointer-events-none opacity-60" />
+    <div className={`bg-white rounded-3xl shadow-sm border border-purple-100 p-5 md:p-6 transition-all duration-300 relative ${isDropdownOpen ? 'z-30' : 'z-10'}`}>
+      {/* Background Glow contained safely */}
+      <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none -z-10">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-50 rounded-full blur-3xl opacity-60" />
+      </div>
 
       {/* Header with Switch */}
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
@@ -265,7 +267,7 @@ const ManualAIInput: React.FC<ManualAIInputProps> = ({
             </div>
 
             {/* Dropdown 3: Mã Tích hợp AI (Multi-select) */}
-            <div className="lg:col-span-1 relative" ref={dropdownRef}>
+            <div className={`lg:col-span-1 relative ${isDropdownOpen ? 'z-50' : 'z-10'}`} ref={dropdownRef}>
               <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase ml-1 flex justify-between items-center">
                 <span>3. Chọn mã AI (Lớp {grade})</span>
                 {checkedCountInCurrent > 0 && (
@@ -294,7 +296,7 @@ const ManualAIInput: React.FC<ManualAIInputProps> = ({
 
               {/* Popup menu with checkboxes */}
               {isDropdownOpen && (
-                <div className="absolute z-30 top-full left-0 mt-1.5 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200/80 p-3.5 text-xs space-y-2.5 max-h-80 overflow-y-auto">
+                <div className="absolute z-50 top-full left-0 mt-1.5 w-80 sm:w-96 md:w-[420px] max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-2xl border border-slate-200/90 p-3.5 text-xs space-y-2.5 max-h-[380px] overflow-y-auto">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                     <div>
                       <span className="font-bold text-slate-800 text-[11px] uppercase tracking-wider block">
